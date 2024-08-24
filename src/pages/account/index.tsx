@@ -8,9 +8,9 @@ import {
   SafeAreaView,
   Pressable,
 } from 'react-native';
-import AddModal from './components';
+import Drawer from '@/components/drawer';
 const Account: React.FC = () => {
-  const [addModalVisible, setAddModalVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const renderPageTitle = () => {
     return (
       <View style={styles.titleWrapper}>
@@ -27,21 +27,33 @@ const Account: React.FC = () => {
       <StatusBar backgroundColor="white" />
       {renderPageTitle()}
       <ScrollView>
+        <View>
+          <Text>---------</Text>
+          <Text>---------</Text>
+          <Text>---------</Text>
+        </View>
         <Pressable
           onPress={() => {
-            setAddModalVisible(true);
+            setDrawerVisible(true);
           }}>
-          <Text>AddModal</Text>
+          <Text>Draw</Text>
         </Pressable>
         {Array.from({length: 10}).map((_, index) => (
           <Text key={index}>{index}</Text>
         ))}
       </ScrollView>
-      <AddModal
-        open={addModalVisible}
-        title="Add"
-        onClose={() => setAddModalVisible(false)}
-      />
+      <Drawer
+        open={drawerVisible}
+        title="Drawer"
+        onClose={() => setDrawerVisible(false)}>
+        <View>
+          {Array.from({length: 100}).map((_, index) => (
+            <View key={index}>
+              <Text style={{fontSize: 20}}>{index}</Text>
+            </View>
+          ))}
+        </View>
+      </Drawer>
     </SafeAreaView>
   );
 };

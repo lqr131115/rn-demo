@@ -1,17 +1,57 @@
-import React, {useState} from 'react';
-import {Modal, Pressable, StyleSheet, Text, View, Image} from 'react-native';
-
+import React, {useRef} from 'react';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  Animated,
+} from 'react-native';
+import close_img from '@/assets/img/close.png';
+import {HIT_SLOP, WINDOW_HEIGHT} from '@/constants';
 interface IProps {
   open: boolean;
   title?: string;
   onClose?: () => void;
+  enableTabBgClose?: boolean;
   [key: string]: any;
 }
+const CModal: React.FC<IProps> = props => {
+  const {
+    children,
+    open = false,
+    title = '',
+    enableTabBgClose = true,
+    onClose,
+  } = props;
+  const {current: contentLayout} = useRef<Record<string, number>>({
+    height: WINDOW_HEIGHT,
+    width: 0,
+  });
+  const translateYDistance = useRef(
+    new Animated.Value(contentLayout.height),
+  ).current;
 
-const CDrawer: React.FC<IProps> = props => {
-  const {children, open = false, title = '', onClose} = props;
-  const [modalVisible, setModalVisible] = useState(open);
-
+  const handleClose = () => {
+    Animated.timing(translateYDistance, {
+      toValue: contentLayout.height,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      onClose && onClose();
+    });
+  };
+  const onContentLayout = (e: any) => {
+    const {height = WINDOW_HEIGHT} = e?.nativeEvent?.layout ?? {};
+    contentLayout.height = height;
+    Animated.timing(translateYDistance, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
   const _renderHeader = () => {
     return (
       <View style={styles.header}>
@@ -20,38 +60,38 @@ const CDrawer: React.FC<IProps> = props => {
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.right}>
-          <Pressable
-            style={styles.openButton}
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}>
-            <Image
-              style={{width: 16, height: 16}}
-              source={{
-                uri: require('./assets/close.svg'),
-              }}
-            />
+          <Pressable hitSlop={HIT_SLOP} onPress={handleClose}>
+            <Image style={styles.close_img} source={close_img} />
           </Pressable>
         </View>
       </View>
     );
-  };
-  const handleClose = () => {
-    setModalVisible(false);
-    onClose && onClose();
   };
   return (
     <>
       <Modal
         animationType="fade"
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={handleClose}>
-        <View style={styles.container}>
-          <View style={styles.content}>
-            {_renderHeader()}
-            {children}
-          </View>
+        visible={open}
+        onRequestClose={() => onClose && onClose()}
+        statusBarTranslucent>
+        <View style={styles.viewWrapper}>
+          <View
+            style={styles.section}
+            onTouchEnd={() => enableTabBgClose && handleClose()}
+          />
+          <Animated.View
+            style={[
+              styles.container,
+              {
+                transform: [{translateY: translateYDistance}],
+              },
+            ]}>
+            <View style={styles.content} onLayout={onContentLayout}>
+              <View style={styles.headerWrapper}>{_renderHeader()}</View>
+              <ScrollView style={styles.bodyWrapper}>{children}</ScrollView>
+            </View>
+          </Animated.View>
         </View>
       </Modal>
     </>
@@ -59,31 +99,30 @@ const CDrawer: React.FC<IProps> = props => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  viewWrapper: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  section: {
+    flex: 1,
+  },
+  container: {
+    flexDirection: 'column',
   },
   content: {
     backgroundColor: 'white',
-    borderRadius: 12,
-    marginHorizontal: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    borderTopLeftRadius: 6,
+    borderTopRightRadius: 6,
+    maxHeight: WINDOW_HEIGHT * 0.8,
+    minHeight: WINDOW_HEIGHT * 0.4,
+  },
+  headerWrapper: {
+    paddingVertical: 8,
+    paddingHorizontal: 5,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 5,
   },
   left: {},
   middle: {
@@ -96,17 +135,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   right: {},
-  openButton: {
-    backgroundColor: '#F194FF',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  close_img: {
+    height: 22,
+    width: 22,
   },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  bodyWrapper: {
+    paddingHorizontal: 5,
   },
 });
 
-export default CDrawer;
+export default CModal;

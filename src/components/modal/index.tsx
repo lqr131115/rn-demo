@@ -1,6 +1,16 @@
 import React from 'react';
-import {Modal, Pressable, StyleSheet, Text, View, Image} from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+} from 'react-native';
 import close_img from '@/assets/img/close.png';
+import {HIT_SLOP} from '@/constants';
+
 interface IProps {
   open: boolean;
   title?: string;
@@ -21,9 +31,8 @@ const CModal: React.FC<IProps> = props => {
           <Text style={styles.title}>{title}</Text>
         </View>
         <View style={styles.right}>
-          <Pressable onPress={handleClose}>
+          <Pressable hitSlop={HIT_SLOP} onPress={handleClose}>
             <Image style={styles.close_img} source={close_img} />
-            {/* <Text>Text</Text> */}
           </Pressable>
         </View>
       </View>
@@ -35,11 +44,12 @@ const CModal: React.FC<IProps> = props => {
         animationType="fade"
         transparent={true}
         visible={open}
-        onRequestClose={handleClose}>
+        onRequestClose={handleClose}
+        statusBarTranslucent>
         <View style={styles.container}>
           <View style={styles.content}>
             <View style={styles.headerWrapper}>{_renderHeader()}</View>
-            <View style={styles.bodyWrapper}>{children}</View>
+            <ScrollView style={styles.bodyWrapper}>{children}</ScrollView>
           </View>
         </View>
       </Modal>
@@ -59,14 +69,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginHorizontal: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   headerWrapper: {
     flexDirection: 'row',
