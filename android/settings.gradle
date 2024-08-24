@@ -1,3 +1,15 @@
+// Gradle 7.0以上可以在 settings.gradle中添加 aliyun 的仓库解决
+// dependencyResolutionManagement {
+//     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//     repositories {
+//         google()
+//         mavenCentral()
+//         maven {
+//             url 'https://maven.aliyun.com/repository/public/'
+//         }
+//     }
+// }
+
 rootProject.name = 'RnDemo'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
