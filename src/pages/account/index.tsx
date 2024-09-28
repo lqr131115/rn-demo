@@ -9,8 +9,11 @@ import {
   Pressable,
 } from 'react-native';
 import Drawer from '@/components/drawer';
+// import Dialog from '@/components/dialog';
+import Dialog from '@/components/dialog';
 const Account: React.FC = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
   const renderPageTitle = () => {
     return (
       <View style={styles.titleWrapper}>
@@ -27,20 +30,20 @@ const Account: React.FC = () => {
       <StatusBar backgroundColor="white" />
       {renderPageTitle()}
       <ScrollView>
-        <View>
-          <Text>---------</Text>
-          <Text>---------</Text>
-          <Text>---------</Text>
-        </View>
+        <Text>---------</Text>
         <Pressable
           onPress={() => {
             setDrawerVisible(true);
           }}>
           <Text>Draw</Text>
         </Pressable>
-        {Array.from({length: 10}).map((_, index) => (
-          <Text key={index}>{index}</Text>
-        ))}
+        <Text>---------</Text>
+        <Pressable
+          onPress={() => {
+            setDialogVisible(true);
+          }}>
+          <Text>Dialog</Text>
+        </Pressable>
       </ScrollView>
       <Drawer
         open={drawerVisible}
@@ -54,6 +57,18 @@ const Account: React.FC = () => {
           ))}
         </View>
       </Drawer>
+      <Dialog
+        open={dialogVisible}
+        title="Drawer"
+        onClose={() => setDialogVisible(false)}>
+        <View>
+          {Array.from({length: 100}).map((_, index) => (
+            <View key={index}>
+              <Text style={{fontSize: 20}}>{index}</Text>
+            </View>
+          ))}
+        </View>
+      </Dialog>
     </SafeAreaView>
   );
 };

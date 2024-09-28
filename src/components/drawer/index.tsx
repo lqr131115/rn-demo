@@ -18,7 +18,7 @@ interface IProps {
   enableTabBgClose?: boolean;
   [key: string]: any;
 }
-const CModal: React.FC<IProps> = props => {
+const Drawer: React.FC<IProps> = props => {
   const {
     children,
     open = false,
@@ -89,7 +89,9 @@ const CModal: React.FC<IProps> = props => {
             ]}>
             <View style={styles.content} onLayout={onContentLayout}>
               <View style={styles.headerWrapper}>{_renderHeader()}</View>
-              <ScrollView style={styles.bodyWrapper}>{children}</ScrollView>
+              <ScrollView contentContainerStyle={styles.bodyWrapper}>
+                {children}
+              </ScrollView>
             </View>
           </Animated.View>
         </View>
@@ -144,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CModal;
+export default Drawer;
