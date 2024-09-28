@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,20 +10,34 @@ import {
 } from 'react-native';
 import arrow_up from '@/assets/img/arrow-up.png';
 import arrow_down from '@/assets/img/arrow-down.png';
+import {ICard, ICardChild} from '../../type';
 interface IProps {
+  info?: ICard;
   expand?: boolean;
-  info?: Record<string, any>;
+  onExpand?: (id: string) => void;
+  onEdit?: (info: ICard, child: ICardChild) => void;
+  onDelete?: (info: ICard, child: ICardChild) => void;
 }
 
-const Card: React.FC<IProps> = ({info, expand = false}) => {
-  const [open, setOpen] = useState(expand);
+const Card: React.FC<IProps> = ({
+  info,
+  expand = true,
+  onExpand,
+  onEdit,
+  onDelete,
+}) => {
   if (!info) {
     return null;
   }
   const {title, children = []} = info;
-
+  const onPress = (child: ICardChild) => {
+    onEdit && onEdit(info, child);
+  };
+  const onLongPress = (child: ICardChild) => {
+    onDelete && onDelete(info, child);
+  };
   function renderContent() {
-    if (!open) {
+    if (!expand) {
       return null;
     }
     return (
@@ -36,7 +50,8 @@ const Card: React.FC<IProps> = ({info, expand = false}) => {
             return (
               <Pressable
                 style={[styles.wrapper, {borderBottomWidth: isLast ? 0 : 1}]}
-                onLongPress={() => console.log(item.title)}>
+                onPress={() => onPress(item)}
+                onLongPress={() => onLongPress(item)}>
                 <Text>{item.title}</Text>
                 <View style={styles.info}>
                   <Text>账号: {item.account}</Text>
@@ -52,13 +67,13 @@ const Card: React.FC<IProps> = ({info, expand = false}) => {
   return (
     <View style={styles.container}>
       <Pressable
-        style={[styles.header, {borderBottomWidth: open ? 1 : 0}]}
+        style={[styles.header, {borderBottomWidth: expand ? 1 : 0}]}
         onPress={() => {
-          setOpen(!open);
+          onExpand && onExpand(info.id);
         }}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.arrow}>
-          {open ? (
+          {expand ? (
             <Image style={styles.arrow_icon} source={arrow_down} />
           ) : (
             <Image style={styles.arrow_icon} source={arrow_up} />

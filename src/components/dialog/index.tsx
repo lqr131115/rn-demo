@@ -15,11 +15,12 @@ interface IProps {
   open: boolean;
   title?: string;
   onClose?: () => void;
+  headerRender?: () => React.ReactNode;
   [key: string]: any;
 }
 
 const Dialog: React.FC<IProps> = props => {
-  const {children, open = false, title = '', onClose} = props;
+  const {children, open = false, title = '', onClose, headerRender} = props;
   const handleClose = () => {
     onClose && onClose();
   };
@@ -47,7 +48,9 @@ const Dialog: React.FC<IProps> = props => {
         onRequestClose={handleClose}>
         <View style={styles.container}>
           <View style={styles.content}>
-            <View style={styles.headerWrapper}>{_renderHeader()}</View>
+            <View style={styles.headerWrapper}>
+              {headerRender ? headerRender() : _renderHeader()}
+            </View>
             <ScrollView contentContainerStyle={styles.bodyWrapper}>
               {children}
             </ScrollView>
@@ -70,7 +73,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginHorizontal: 20,
     maxHeight: '60%',
-    minHeight: '20%',
+    minHeight: '10%',
+    minWidth: '80%',
   },
   headerWrapper: {
     flexDirection: 'row',

@@ -1,8 +1,11 @@
 import {getUUID} from '@/utils';
-export const mockCards = [
+import {ICard} from './type';
+
+export const mockCards: ICard[] = [
   {
     id: getUUID(),
     title: '腾讯',
+    expand: true,
     children: [
       {
         id: getUUID(),
@@ -20,6 +23,7 @@ export const mockCards = [
   },
   {
     id: getUUID(),
+    expand: true,
     title: '银行卡',
     children: [
       {

@@ -6,21 +6,43 @@ import {
   View,
   SafeAreaView,
   FlatList,
+  Pressable,
 } from 'react-native';
 import Card from './components/Card';
 import {mockCards} from './mock';
+import {useAccount} from './hooks/useAccount';
+import DeleteDialog from './components/DeleteDialog';
+import {ICard, ICardChild} from './type';
 const Account: React.FC = () => {
-  const [data, setData] = useState(mockCards);
+  const {
+    data,
+    activeCard,
+    activeChild,
+    setActiveCard,
+    setActiveChild,
+    setData,
+    handleExpand,
+  } = useAccount();
+  const [delDialogVisible, setDelDialogVisible] = useState(false);
   const renderPageTitle = () => {
     return (
       <View style={styles.titleWrapper}>
-        <View style={styles.left} />
+        <View style={styles.left}>
+          <Pressable onPress={() => setData(mockCards)}>
+            <Text>Reset</Text>
+          </Pressable>
+        </View>
         <View style={styles.middle}>
           <Text style={styles.title}>Account</Text>
         </View>
         <View style={styles.right} />
       </View>
     );
+  };
+  const onDelete = (info: ICard, child: ICardChild) => {
+    setActiveCard(info);
+    setActiveChild(child);
+    setDelDialogVisible(true);
   };
   return (
     <SafeAreaView>
@@ -33,10 +55,21 @@ const Account: React.FC = () => {
         renderItem={({item}) => {
           return (
             <View style={styles.card}>
-              <Card info={item} expand={true} />
+              <Card
+                info={item}
+                expand={item.expand}
+                onExpand={handleExpand}
+                onDelete={onDelete}
+              />
             </View>
           );
         }}
+      />
+      <DeleteDialog
+        activeCard={activeCard}
+        activeChild={activeChild}
+        open={delDialogVisible}
+        onClose={() => setDelDialogVisible(false)}
       />
     </SafeAreaView>
   );
