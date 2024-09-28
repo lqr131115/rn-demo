@@ -4,16 +4,13 @@ import {
   StyleSheet,
   StatusBar,
   View,
-  ScrollView,
   SafeAreaView,
-  Pressable,
+  FlatList,
 } from 'react-native';
-import Drawer from '@/components/drawer';
-// import Dialog from '@/components/dialog';
-import Dialog from '@/components/dialog';
+import Card from './components/Card';
+import {mockCards} from './mock';
 const Account: React.FC = () => {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [dialogVisible, setDialogVisible] = useState(false);
+  const [data, setData] = useState(mockCards);
   const renderPageTitle = () => {
     return (
       <View style={styles.titleWrapper}>
@@ -29,46 +26,18 @@ const Account: React.FC = () => {
     <SafeAreaView>
       <StatusBar backgroundColor="white" />
       {renderPageTitle()}
-      <ScrollView>
-        <Text>---------</Text>
-        <Pressable
-          onPress={() => {
-            setDrawerVisible(true);
-          }}>
-          <Text>Draw</Text>
-        </Pressable>
-        <Text>---------</Text>
-        <Pressable
-          onPress={() => {
-            setDialogVisible(true);
-          }}>
-          <Text>Dialog</Text>
-        </Pressable>
-      </ScrollView>
-      <Drawer
-        open={drawerVisible}
-        title="Drawer"
-        onClose={() => setDrawerVisible(false)}>
-        <View>
-          {Array.from({length: 100}).map((_, index) => (
-            <View key={index}>
-              <Text style={{fontSize: 20}}>{index}</Text>
+      <FlatList
+        contentContainerStyle={styles.cards}
+        data={data}
+        keyExtractor={item => item.id}
+        renderItem={({item}) => {
+          return (
+            <View style={styles.card}>
+              <Card info={item} expand={true} />
             </View>
-          ))}
-        </View>
-      </Drawer>
-      <Dialog
-        open={dialogVisible}
-        title="Drawer"
-        onClose={() => setDialogVisible(false)}>
-        <View>
-          {Array.from({length: 100}).map((_, index) => (
-            <View key={index}>
-              <Text style={{fontSize: 20}}>{index}</Text>
-            </View>
-          ))}
-        </View>
-      </Dialog>
+          );
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -80,8 +49,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 5,
-    borderWidth: 1,
-    borderColor: 'red',
   },
   left: {},
   middle: {
@@ -94,5 +61,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   right: {},
+  cards: {
+    margin: 10,
+  },
+  card: {
+    marginBottom: 10,
+  },
 });
+
 export default Account;
