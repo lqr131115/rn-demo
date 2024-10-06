@@ -1,11 +1,10 @@
 import {getUUID} from '@/utils';
 import {ICard} from './type';
 
-export const mockCards: ICard[] = [
+export const mockApiCards: ICard[] = [
   {
     id: getUUID(),
     title: '腾讯',
-    expand: true,
     children: [
       {
         id: getUUID(),
@@ -23,7 +22,6 @@ export const mockCards: ICard[] = [
   },
   {
     id: getUUID(),
-    expand: true,
     title: '银行卡',
     children: [
       {
@@ -41,3 +39,17 @@ export const mockCards: ICard[] = [
     ],
   },
 ];
+
+export const initCards: ICard[] = mockApiCards.map(c => {
+  return {
+    ...c,
+    expand: true,
+    children: c.children.map(child => {
+      return {
+        ...child,
+        renderPwd: child.password,
+        cryptoPwd: '*'.repeat(child.password.length),
+      };
+    }),
+  };
+});

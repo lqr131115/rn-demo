@@ -1,14 +1,14 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {produce} from 'immer';
 import {ICard} from '@/pages/account/type';
-import {mockCards} from '@/pages/account/mock';
+import {initCards} from '@/pages/account/mock';
 
 interface IAccountState {
   accountCard: ICard[];
 }
 
 const initialState: IAccountState = {
-  accountCard: mockCards,
+  accountCard: initCards,
 };
 
 export const accountSlice = createSlice({
@@ -70,13 +70,35 @@ export const accountSlice = createSlice({
         }
       },
     ),
+    togglePwdVisible: produce(
+      (draft: IAccountState, action: PayloadAction<{visible: boolean}>) => {
+        const {accountCard} = draft;
+        const {visible} = action.payload;
+        draft.accountCard = accountCard.map(d => {
+          return {
+            ...d,
+            children: d.children.map(c => {
+              return {
+                ...c,
+                renderPwd: visible ? c.password : c.cryptoPwd,
+              };
+            }),
+          };
+        });
+      },
+    ),
     resetAccountCard: produce((draft: IAccountState) => {
-      draft.accountCard = mockCards;
+      draft.accountCard = initCards;
     }),
   },
 });
 
-export const {toggleCardExpand, editCard, deleteCard, resetAccountCard} =
-  accountSlice.actions;
+export const {
+  toggleCardExpand,
+  editCard,
+  deleteCard,
+  resetAccountCard,
+  togglePwdVisible,
+} = accountSlice.actions;
 
 export default accountSlice.reducer;

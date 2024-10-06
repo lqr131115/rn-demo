@@ -55,7 +55,7 @@ const Card: React.FC<IProps> = ({
                 <Text>{item.title}</Text>
                 <View style={styles.info}>
                   <Text>账号: {item.account}</Text>
-                  <Text>密码: {item.password}</Text>
+                  <Text>密码: {item.renderPwd}</Text>
                 </View>
               </Pressable>
             );

@@ -7,12 +7,17 @@ import {
   SafeAreaView,
   FlatList,
   Pressable,
+  Switch,
 } from 'react-native';
 import Card from './components/Card';
 import {useAccount} from './hooks/useAccount';
 import DeleteDialog from './components/DeleteDialog';
 import {useAppDispatch} from '@/hooks/useRdx';
-import {resetAccountCard, toggleCardExpand} from '@/store/reducer/account';
+import {
+  resetAccountCard,
+  toggleCardExpand,
+  togglePwdVisible,
+} from '@/store/reducer/account';
 const Account: React.FC = () => {
   const {accountCard} = useAccount();
   const dispatch = useAppDispatch();
@@ -23,6 +28,11 @@ const Account: React.FC = () => {
   const activeChild = activeCard?.children.find(
     item => item.id === activeChildId,
   );
+  const [isPwdVisible, setIsPwdVisible] = useState(true);
+  const togglePasswordVisible = () => {
+    setIsPwdVisible(!isPwdVisible);
+    dispatch(togglePwdVisible({visible: !isPwdVisible}));
+  };
   const handleReset = () => {
     dispatch(resetAccountCard());
   };
@@ -49,7 +59,9 @@ const Account: React.FC = () => {
         <View style={styles.middle}>
           <Text style={styles.title}>Account</Text>
         </View>
-        <View style={styles.right} />
+        <View style={styles.right}>
+          <Switch onValueChange={togglePasswordVisible} value={isPwdVisible} />
+        </View>
       </View>
     );
   };

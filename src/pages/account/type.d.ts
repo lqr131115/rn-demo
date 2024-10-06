@@ -1,8 +1,8 @@
 export interface ICard {
   id: string;
   title: string;
-  expand: boolean;
   children: ICardChild[];
+  [key: string]: any;
 }
 
 export interface ICardChild {
@@ -10,4 +10,5 @@ export interface ICardChild {
   title: string;
   account: string;
   password: string;
+  [key: string]: any;
 }
