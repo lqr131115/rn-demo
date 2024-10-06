@@ -9,8 +9,8 @@ import {ICard, ICardChild} from '../../type';
 interface IProps {
   open: boolean;
   onClose: () => void;
-  activeCard: ICard;
-  activeChild: ICardChild;
+  activeCard?: ICard;
+  activeChild?: ICardChild;
 }
 
 const DeleteDialog: React.FC<IProps> = ({
@@ -19,7 +19,6 @@ const DeleteDialog: React.FC<IProps> = ({
   activeCard,
   activeChild,
 }) => {
-  const {handleDelete} = useAccount();
   const headerRender = () => {
     return (
       <View style={styles.header}>
@@ -33,7 +32,7 @@ const DeleteDialog: React.FC<IProps> = ({
     );
   };
   const onConfirm = () => {
-    handleDelete(activeCard?.id, activeChild?.id);
+    // handleDelete(activeCard?.id, activeChild?.id);
     onClose && onClose();
   };
   const onCancel = () => {

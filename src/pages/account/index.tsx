@@ -9,26 +9,26 @@ import {
   Pressable,
 } from 'react-native';
 import Card from './components/Card';
-import {mockCards} from './mock';
 import {useAccount} from './hooks/useAccount';
 import DeleteDialog from './components/DeleteDialog';
 import {ICard, ICardChild} from './type';
+import {useAppDispatch} from '@/hooks/useRdx';
+import {resetAccountCard, toggleCardExpand} from '@/store/reducer/account';
 const Account: React.FC = () => {
-  const {
-    data,
-    activeCard,
-    activeChild,
-    setActiveCard,
-    setActiveChild,
-    setData,
-    handleExpand,
-  } = useAccount();
+  const {accountCard, activeCard, activeChild} = useAccount();
+  const dispatch = useAppDispatch();
   const [delDialogVisible, setDelDialogVisible] = useState(false);
+  const handleReset = () => {
+    dispatch(resetAccountCard());
+  };
+  const handleExpand = (id: string) => {
+    dispatch(toggleCardExpand({id}));
+  };
   const renderPageTitle = () => {
     return (
       <View style={styles.titleWrapper}>
         <View style={styles.left}>
-          <Pressable onPress={() => setData(mockCards)}>
+          <Pressable onPress={handleReset}>
             <Text>Reset</Text>
           </Pressable>
         </View>
@@ -40,8 +40,7 @@ const Account: React.FC = () => {
     );
   };
   const onDelete = (info: ICard, child: ICardChild) => {
-    setActiveCard(info);
-    setActiveChild(child);
+    console.log('onDelete', info, child);
     setDelDialogVisible(true);
   };
   return (
@@ -50,7 +49,7 @@ const Account: React.FC = () => {
       {renderPageTitle()}
       <FlatList
         contentContainerStyle={styles.cards}
-        data={data}
+        data={accountCard}
         keyExtractor={item => item.id}
         renderItem={({item}) => {
           return (
