@@ -7,6 +7,7 @@ import {
   FlatList,
   SafeAreaView,
   Pressable,
+  LayoutAnimation,
 } from 'react-native';
 import arrow_up from '@/assets/img/arrow-up.png';
 import arrow_down from '@/assets/img/arrow-down.png';
@@ -69,6 +70,7 @@ const Card: React.FC<IProps> = ({
       <Pressable
         style={[styles.header, {borderBottomWidth: expand ? 1 : 0}]}
         onPress={() => {
+          LayoutAnimation.easeInEaseOut();
           onExpand && onExpand(info.id);
         }}>
         <Text style={styles.title}>{title}</Text>
