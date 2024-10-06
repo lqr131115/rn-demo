@@ -1,24 +1,26 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
-import {useAccount} from '../../hooks/useAccount';
+import {useAppDispatch} from '@/hooks/useRdx';
+import {deleteCard} from '@/store/reducer/account';
 import Dialog from '@/components/dialog';
 import delete_img from '@/assets/img/delete.png';
 import Button from '@/components/button';
-import {ICard, ICardChild} from '../../type';
+import {ICardChild} from '../../type';
 
 interface IProps {
   open: boolean;
-  onClose: () => void;
-  activeCard?: ICard;
+  onClose?: () => void;
+  activeCardId?: string;
   activeChild?: ICardChild;
 }
 
 const DeleteDialog: React.FC<IProps> = ({
   open,
   onClose,
-  activeCard,
+  activeCardId,
   activeChild,
 }) => {
+  const dispatch = useAppDispatch();
   const headerRender = () => {
     return (
       <View style={styles.header}>
@@ -32,7 +34,7 @@ const DeleteDialog: React.FC<IProps> = ({
     );
   };
   const onConfirm = () => {
-    // handleDelete(activeCard?.id, activeChild?.id);
+    dispatch(deleteCard({cardId: activeCardId, childId: activeChild?.id}));
     onClose && onClose();
   };
   const onCancel = () => {

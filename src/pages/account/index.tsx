@@ -11,18 +11,32 @@ import {
 import Card from './components/Card';
 import {useAccount} from './hooks/useAccount';
 import DeleteDialog from './components/DeleteDialog';
-import {ICard, ICardChild} from './type';
 import {useAppDispatch} from '@/hooks/useRdx';
 import {resetAccountCard, toggleCardExpand} from '@/store/reducer/account';
 const Account: React.FC = () => {
-  const {accountCard, activeCard, activeChild} = useAccount();
+  const {accountCard} = useAccount();
   const dispatch = useAppDispatch();
   const [delDialogVisible, setDelDialogVisible] = useState(false);
+  const [activeCardId, setActiveCardId] = useState<string>();
+  const [activeChildId, setActiveChildId] = useState<string>();
+  const activeCard = accountCard.find(item => item.id === activeCardId);
+  const activeChild = activeCard?.children.find(
+    item => item.id === activeChildId,
+  );
   const handleReset = () => {
     dispatch(resetAccountCard());
   };
   const handleExpand = (id: string) => {
     dispatch(toggleCardExpand({id}));
+  };
+  const handleEdit = (cardId: string, childId: string) => {
+    setActiveCardId(cardId);
+    setActiveChildId(childId);
+  };
+  const handleDelete = (cardId: string, childId: string) => {
+    setActiveCardId(cardId);
+    setActiveChildId(childId);
+    setDelDialogVisible(true);
   };
   const renderPageTitle = () => {
     return (
@@ -39,10 +53,6 @@ const Account: React.FC = () => {
       </View>
     );
   };
-  const onDelete = (info: ICard, child: ICardChild) => {
-    console.log('onDelete', info, child);
-    setDelDialogVisible(true);
-  };
   return (
     <SafeAreaView>
       <StatusBar backgroundColor="white" />
@@ -58,14 +68,15 @@ const Account: React.FC = () => {
                 info={item}
                 expand={item.expand}
                 onExpand={handleExpand}
-                onDelete={onDelete}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
             </View>
           );
         }}
       />
       <DeleteDialog
-        activeCard={activeCard}
+        activeCardId={activeCardId}
         activeChild={activeChild}
         open={delDialogVisible}
         onClose={() => setDelDialogVisible(false)}

@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import arrow_up from '@/assets/img/arrow-up.png';
 import arrow_down from '@/assets/img/arrow-down.png';
-import {ICard, ICardChild} from '../../type';
+import {ICard} from '../../type';
 interface IProps {
   info?: ICard;
   expand?: boolean;
   onExpand?: (id: string) => void;
-  onEdit?: (info: ICard, child: ICardChild) => void;
-  onDelete?: (info: ICard, child: ICardChild) => void;
+  onEdit?: (cardId: string, childId: string) => void;
+  onDelete?: (cardId: string, childId: string) => void;
 }
 
 const Card: React.FC<IProps> = ({
@@ -30,11 +30,11 @@ const Card: React.FC<IProps> = ({
     return null;
   }
   const {title, children = []} = info;
-  const onPress = (child: ICardChild) => {
-    onEdit && onEdit(info, child);
+  const onPress = (childId: string) => {
+    onEdit && onEdit(info.id, childId);
   };
-  const onLongPress = (child: ICardChild) => {
-    onDelete && onDelete(info, child);
+  const onLongPress = (childId: string) => {
+    onDelete && onDelete(info.id, childId);
   };
   function renderContent() {
     if (!expand) {
@@ -50,8 +50,8 @@ const Card: React.FC<IProps> = ({
             return (
               <Pressable
                 style={[styles.wrapper, {borderBottomWidth: isLast ? 0 : 1}]}
-                onPress={() => onPress(item)}
-                onLongPress={() => onLongPress(item)}>
+                onPress={() => onPress(item.id)}
+                onLongPress={() => onLongPress(item.id)}>
                 <Text>{item.title}</Text>
                 <View style={styles.info}>
                   <Text>账号: {item.account}</Text>

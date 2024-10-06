@@ -1,16 +1,23 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Drawer from '@/components/drawer';
-import {useAccount} from '../../hooks/useAccount';
+import {ICard, ICardChild} from '../../type';
 
 interface IProps {
   open: boolean;
   onClose: () => void;
   title: string;
+  activeCard: ICard;
+  activeChild: ICardChild;
 }
 
-const AddDrawer: React.FC<IProps> = ({open, onClose, title = 'Add'}) => {
-  const {activeCard, activeChild} = useAccount();
+const AddDrawer: React.FC<IProps> = ({
+  open,
+  onClose,
+  title = 'Add',
+  activeCard,
+  activeChild,
+}) => {
   return (
     <>
       <Drawer open={open} onClose={onClose} title={title}>
