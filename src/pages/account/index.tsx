@@ -12,6 +12,7 @@ import {
 import Card from './components/Card';
 import {useAccount} from './hooks/useAccount';
 import DeleteDialog from './components/DeleteDialog';
+import AddDrawer from './components/AddDrawer';
 import {useAppDispatch} from '@/hooks/useRdx';
 import {
   resetAccountCard,
@@ -22,6 +23,7 @@ const Account: React.FC = () => {
   const {accountCard} = useAccount();
   const dispatch = useAppDispatch();
   const [delDialogVisible, setDelDialogVisible] = useState(false);
+  const [addDrawerVisible, setAddDrawerVisible] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string>();
   const [activeChildId, setActiveChildId] = useState<string>();
   const activeCard = accountCard.find(item => item.id === activeCardId);
@@ -42,6 +44,7 @@ const Account: React.FC = () => {
   const handleEdit = (cardId: string, childId: string) => {
     setActiveCardId(cardId);
     setActiveChildId(childId);
+    setAddDrawerVisible(true);
   };
   const handleDelete = (cardId: string, childId: string) => {
     setActiveCardId(cardId);
@@ -92,6 +95,12 @@ const Account: React.FC = () => {
         activeChild={activeChild}
         open={delDialogVisible}
         onClose={() => setDelDialogVisible(false)}
+      />
+      <AddDrawer
+        activeCardId={activeCardId}
+        activeChildId={activeChildId}
+        open={addDrawerVisible}
+        onClose={() => setAddDrawerVisible(false)}
       />
     </SafeAreaView>
   );
